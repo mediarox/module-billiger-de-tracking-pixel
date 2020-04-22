@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @package Mediarox_BilligerDeTrackingPixel
+ * @copyright Copyright 2020(c) mediarox UG (haftungsbeschraenkt) (http://www.mediarox.de)
+ * @author Marcus Bernt <mbernt@mediarox.de>
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="mediarox">
+            <label>Mediarox</label>
+        </tab>
+        <section id="mediarox_billiger_tracking" showInStore="1" showInWebsite="1" showInDefault="1" translate="label">
+            <tab>mediarox</tab>
+            <label>Mediarox Billiger.de Tracking</label>
+            <resource>Mediarox_BilligerDeTrackingPixel::config_mediarox_billiger_pixel</resource>
+            <group id="general" showInStore="1" showInWebsite="1" showInDefault="1" translate="label">
+                <field id="enable" showInStore="1" showInWebsite="1" showInDefault="1" translate="label" type="select">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                </field>
+                <field id="shop_id" showInStore="1" showInWebsite="1" showInDefault="1" translate="label" type="text">
+                    <label>Shop ID</label>
+                    <validate>required-entry</validate>
+                    <depends>
+                        <field id="mediarox_billiger_tracking/general/enable">1</field>
+                    </depends>
+                </field>
+                <field id="method" showInStore="1" showInWebsite="1" showInDefault="1" translate="label" type="select">
+                    <label>Method</label>
+                    <validate>required-entry</validate>
+                    <source_model>Mediarox\BilligerDeTrackingPixel\Model\Source\Config\MethodOptions</source_model>
+                    <depends>
+                        <field id="mediarox_billiger_tracking/general/enable">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

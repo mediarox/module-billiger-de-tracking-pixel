@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @package Mediarox_BilligerDeTrackingPixel
+ * @copyright Copyright 2020 (c) mediarox UG (haftungsbeschraenkt) (http://www.mediarox.de)
+ * @author Marcus Bernt <mbernt@mediarox.de>
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="content">
+            <block class="Magento\Framework\View\Element\Template" name="mediarox_billiger_tracking"
+                   template="Mediarox_BilligerDeTrackingPixel::billiger_pixel.phtml" ifconfig="mediarox_billiger_tracking/general/enable">
+                <arguments>
+                    <argument name="mediarox_billiger_tracking_view_model" xsi:type="object">Mediarox\BilligerDeTrackingPixel\ViewModel\BilligerTracking</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

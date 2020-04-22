@@ -1,0 +1,19 @@
+<?php
+/**
+ * @package   Mediarox_BilligerDeTrackingPixel
+ * @copyright Copyright 2020 (c) mediarox UG (haftungsbeschraenkt) (http://www.mediarox.de)
+ * @author    Marcus Bernt <mbernt@mediarox.de>
+ *
+ * @var \Magento\Framework\View\Element\Template               $block
+ * @var \Mediarox\BilligerDeTrackingPixel\ViewModel\BilligerTracking $viewModel
+ */
+?>
+<?php $viewModel = $block->getData('mediarox_billiger_tracking_view_model'); ?>
+<?php if ($trackingUrl = $viewModel->getBilligerTrackingUrl()) : ?>
+    <img alt=""
+         id="mediarox_billiger_tracking_pixel"
+         src="<?= $block->escapeUrl($trackingUrl) ?>"
+         style="display: none"
+         width="1"
+         height="1">
+<?php endif; ?>
