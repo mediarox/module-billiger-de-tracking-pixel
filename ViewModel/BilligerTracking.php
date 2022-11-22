@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package   Mediarox_BilligerDeTrackingPixel
  * @copyright Copyright 2020 (c) mediarox UG (haftungsbeschraenkt) (http://www.mediarox.de)
@@ -12,55 +13,47 @@ use Magento\Directory\Model\Currency;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
+use Magento\Sales\Model\Order;
+use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\StoreManagerInterface;
 use Mediarox\BilligerDeTrackingPixel\Model\Source\Config\MethodOptions;
+use Zend_Currency;
 
 /**
  * Class BilligerTracking
  */
 class BilligerTracking implements ArgumentInterface
 {
-    const BILLIGER_TRACKING_URL = 'https://billiger.de/sale';
-    const SHOP_ID_SYSTEM_CONFIG_PATH = 'mediarox_billiger_tracking/general/shop_id';
-    const METHOD_SYSTEM_CONFIG_PATH = 'mediarox_billiger_tracking/general/method';
-    /**
-     * @var Session
-     */
-    private $checkoutSession;
-    /**
-     * @var Currency
-     */
-    private $currency;
-    /**
-     * @var ScopeConfigInterface
-     */
-    private $scopeConfig;
-    /**
-     * @var UrlInterface
-     */
-    private $url;
-    /**
-     * @var \Magento\Sales\Model\Order
-     */
-    private $order;
+    private const BILLIGER_TRACKING_URL = 'https://billiger.de/sale';
+    private const SHOP_ID_SYSTEM_CONFIG_PATH = 'mediarox_billiger_tracking/general/shop_id';
+    private const METHOD_SYSTEM_CONFIG_PATH = 'mediarox_billiger_tracking/general/method';
+    protected StoreManagerInterface $storeManager;
+    private Session $checkoutSession;
+    private Currency $currency;
+    private ScopeConfigInterface $scopeConfig;
+    private UrlInterface $url;
+    private Order $order;
 
     /**
      * BilligerTracking constructor.
      *
-     * @param Session              $checkoutSession
-     * @param Currency             $currency
-     * @param ScopeConfigInterface $scopeConfig
-     * @param UrlInterface         $url
+     * @param  Session              $checkoutSession
+     * @param  Currency             $currency
+     * @param  ScopeConfigInterface $scopeConfig
+     * @param  UrlInterface         $url
      */
     public function __construct(
         Session $checkoutSession,
         Currency $currency,
         ScopeConfigInterface $scopeConfig,
-        UrlInterface $url
+        UrlInterface $url,
+        StoreManagerInterface $storeManager
     ) {
         $this->checkoutSession = $checkoutSession;
         $this->currency = $currency;
         $this->scopeConfig = $scopeConfig;
         $this->url = $url;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -69,10 +62,18 @@ class BilligerTracking implements ArgumentInterface
     public function getBilligerTrackingUrl(): string
     {
         $this->order = $this->checkoutSession->getLastRealOrder();
-        $method = $this->scopeConfig->getValue(self::METHOD_SYSTEM_CONFIG_PATH);
+        $method = $this->scopeConfig->getValue(
+            self::METHOD_SYSTEM_CONFIG_PATH,
+            ScopeInterface::SCOPE_STORE,
+            $this->storeManager->getStore()
+        );
         $data = [
-            'shop_id' => $this->scopeConfig->getValue(self::SHOP_ID_SYSTEM_CONFIG_PATH),
-            'oid' => $this->order->getIncrementId(),
+            'shop_id' => $this->scopeConfig->getValue(
+                self::SHOP_ID_SYSTEM_CONFIG_PATH,
+                ScopeInterface::SCOPE_STORE,
+                $this->storeManager->getStore()
+            ),
+            'oid'     => $this->order->getIncrementId(),
         ];
 
         switch ($method) {
@@ -100,7 +101,7 @@ class BilligerTracking implements ArgumentInterface
             $data['val_' . $iterator] = $this->currency->formatPrecision(
                 $orderItem->getPrice(),
                 2,
-                ['display' => \Zend_Currency::NO_SYMBOL],
+                ['display' => Zend_Currency::NO_SYMBOL],
                 false
             );
             $iterator++;
