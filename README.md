@@ -1,9 +1,9 @@
-This extension for Magento 2.3.x integrates a tracking pixel on the checkout success page.
+This extension for Magento >=2.3.x integrates a tracking pixel on the checkout success page.
 
 Requirements
 ============
-1. Magento 2.3.x
-2. PHP >=7.1
+1. Magento >=2.3.x
+2. PHP >=7.4
 
 Installation
 ============
