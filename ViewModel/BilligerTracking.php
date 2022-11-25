@@ -11,7 +11,7 @@ namespace Mediarox\BilligerDeTrackingPixel\ViewModel;
 use Magento\Checkout\Model\Session;
 use Magento\Directory\Model\Currency;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\UrlInterface;
+use Magento\Framework\Url\QueryParamsResolverInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Sales\Model\Order;
 use Magento\Store\Model\ScopeInterface;
@@ -24,36 +24,28 @@ use Zend_Currency;
  */
 class BilligerTracking implements ArgumentInterface
 {
-    private const BILLIGER_TRACKING_URL = 'https://billiger.de/sale';
+    private const BILLIGER_TRACKING_URL = 'https://billiger.de/sale?';
     private const SHOP_ID_SYSTEM_CONFIG_PATH = 'mediarox_billiger_tracking/general/shop_id';
     private const METHOD_SYSTEM_CONFIG_PATH = 'mediarox_billiger_tracking/general/method';
     protected StoreManagerInterface $storeManager;
+    protected QueryParamsResolverInterface $paramsResolver;
     private Session $checkoutSession;
     private Currency $currency;
     private ScopeConfigInterface $scopeConfig;
-    private UrlInterface $url;
     private Order $order;
 
-    /**
-     * BilligerTracking constructor.
-     *
-     * @param  Session              $checkoutSession
-     * @param  Currency             $currency
-     * @param  ScopeConfigInterface $scopeConfig
-     * @param  UrlInterface         $url
-     */
     public function __construct(
         Session $checkoutSession,
         Currency $currency,
         ScopeConfigInterface $scopeConfig,
-        UrlInterface $url,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        QueryParamsResolverInterface $paramsResolver
     ) {
         $this->checkoutSession = $checkoutSession;
         $this->currency = $currency;
         $this->scopeConfig = $scopeConfig;
-        $this->url = $url;
         $this->storeManager = $storeManager;
+        $this->paramsResolver = $paramsResolver;
     }
 
     /**
@@ -83,7 +75,8 @@ class BilligerTracking implements ArgumentInterface
             case MethodOptions::METHOD_EXCLUDE_ORDER_ITEMS:
                 $data = array_merge($data, $this->getOrderTotalValue());
         }
-        return $this->url->getDirectUrl(self::BILLIGER_TRACKING_URL, ['_query' => $data]);
+        $query = $this->paramsResolver->setQueryParams($data)->getQuery(true);
+        return self::BILLIGER_TRACKING_URL . $query;
     }
 
     /**
