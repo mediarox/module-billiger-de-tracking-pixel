@@ -75,7 +75,7 @@ class BilligerTracking implements ArgumentInterface
             case MethodOptions::METHOD_EXCLUDE_ORDER_ITEMS:
                 $data = array_merge($data, $this->getOrderTotalValue());
         }
-        $query = $this->paramsResolver->setQueryParams($data)->getQuery(true);
+        $query = http_build_query($data, '', '&amp;');
         return self::BILLIGER_TRACKING_URL . $query;
     }
 
