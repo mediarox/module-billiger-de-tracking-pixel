@@ -75,7 +75,7 @@ class BilligerTracking implements ArgumentInterface
             case MethodOptions::METHOD_EXCLUDE_ORDER_ITEMS:
                 $data = array_merge($data, $this->getOrderTotalValue());
         }
-        $query = http_build_query($data, '', '&amp;');
+        $query = str_replace('%2C', ',', http_build_query($data, '', '&amp;'));
         return self::BILLIGER_TRACKING_URL . $query;
     }
 
@@ -92,7 +92,7 @@ class BilligerTracking implements ArgumentInterface
             $data['name_' . $iterator] = $orderItem->getName();
             $data['cnt_' . $iterator] = (int)$orderItem->getQtyOrdered();
             $data['val_' . $iterator] = $this->currency->formatPrecision(
-                $orderItem->getPrice(),
+                $orderItem->getPriceInclTax(),
                 2,
                 ['display' => Zend_Currency::NO_SYMBOL],
                 false
