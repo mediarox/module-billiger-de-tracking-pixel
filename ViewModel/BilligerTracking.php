@@ -92,7 +92,7 @@ class BilligerTracking implements ArgumentInterface
             $data['name_' . $iterator] = $orderItem->getName();
             $data['cnt_' . $iterator] = (int)$orderItem->getQtyOrdered();
             $data['val_' . $iterator] = $this->currency->formatPrecision(
-                $orderItem->getPriceInclTax(),
+                $orderItem->getBasePrice(),
                 2,
                 ['display' => Zend_Currency::NO_SYMBOL],
                 false
