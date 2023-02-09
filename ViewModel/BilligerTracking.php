@@ -92,7 +92,7 @@ class BilligerTracking implements ArgumentInterface
             $data['name_' . $iterator] = $orderItem->getName();
             $data['cnt_' . $iterator] = (int)$orderItem->getQtyOrdered();
             $data['val_' . $iterator] = $this->currency->formatPrecision(
-                $orderItem->getBasePrice(),
+                $orderItem->getPriceInclTax(),
                 2,
                 ['display' => Zend_Currency::NO_SYMBOL],
                 false
@@ -107,6 +107,6 @@ class BilligerTracking implements ArgumentInterface
      */
     private function getOrderTotalValue(): array
     {
-        return ['val' => $this->order->getBaseSubtotal()];
+        return ['val' => $this->order->getGrandTotal()];
     }
 }
