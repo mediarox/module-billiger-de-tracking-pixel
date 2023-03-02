@@ -9,15 +9,14 @@
 namespace Mediarox\BilligerDeTrackingPixel\ViewModel;
 
 use Magento\Checkout\Model\Session;
-use Magento\Directory\Model\Currency;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Url\QueryParamsResolverInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Sales\Model\Order;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Mediarox\BilligerDeTrackingPixel\Model\Source\Config\MethodOptions;
-use Zend_Currency;
 
 /**
  * Class BilligerTracking
@@ -30,13 +29,13 @@ class BilligerTracking implements ArgumentInterface
     protected StoreManagerInterface $storeManager;
     protected QueryParamsResolverInterface $paramsResolver;
     private Session $checkoutSession;
-    private Currency $currency;
+    private PriceCurrencyInterface $currency;
     private ScopeConfigInterface $scopeConfig;
     private Order $order;
 
     public function __construct(
         Session $checkoutSession,
-        Currency $currency,
+        PriceCurrencyInterface $currency,
         ScopeConfigInterface $scopeConfig,
         StoreManagerInterface $storeManager,
         QueryParamsResolverInterface $paramsResolver
@@ -54,29 +53,33 @@ class BilligerTracking implements ArgumentInterface
     public function getBilligerTrackingUrl(): string
     {
         $this->order = $this->checkoutSession->getLastRealOrder();
-        $method = $this->scopeConfig->getValue(
-            self::METHOD_SYSTEM_CONFIG_PATH,
-            ScopeInterface::SCOPE_STORE,
-            $this->storeManager->getStore()
-        );
-        $data = [
-            'shop_id' => $this->scopeConfig->getValue(
-                self::SHOP_ID_SYSTEM_CONFIG_PATH,
+        $trackingUrl = '';
+        if ($this->order->getId()) {
+            $method = $this->scopeConfig->getValue(
+                self::METHOD_SYSTEM_CONFIG_PATH,
                 ScopeInterface::SCOPE_STORE,
                 $this->storeManager->getStore()
-            ),
-            'oid'     => $this->order->getIncrementId(),
-        ];
+            );
+            $data = [
+                'shop_id' => $this->scopeConfig->getValue(
+                    self::SHOP_ID_SYSTEM_CONFIG_PATH,
+                    ScopeInterface::SCOPE_STORE,
+                    $this->storeManager->getStore()
+                ),
+                'oid'     => $this->order->getIncrementId(),
+            ];
 
-        switch ($method) {
-            case MethodOptions::METHOD_INCLUDE_ORDER_ITEMS:
-                $data = array_merge($data, $this->getOrderItems());
-                break;
-            case MethodOptions::METHOD_EXCLUDE_ORDER_ITEMS:
-                $data = array_merge($data, $this->getOrderTotalValue());
+            switch ($method) {
+                case MethodOptions::METHOD_INCLUDE_ORDER_ITEMS:
+                    $data = array_merge($data, $this->getOrderItems());
+                    break;
+                case MethodOptions::METHOD_EXCLUDE_ORDER_ITEMS:
+                    $data = array_merge($data, $this->getOrderTotalValue());
+            }
+            $query = str_replace('%2C', ',', http_build_query($data, '', '&'));
+            $trackingUrl = self::BILLIGER_TRACKING_URL . $query;
         }
-        $query = str_replace('%2C', ',', http_build_query($data, '', '&amp;'));
-        return self::BILLIGER_TRACKING_URL . $query;
+        return $trackingUrl;
     }
 
     /**
@@ -91,12 +94,7 @@ class BilligerTracking implements ArgumentInterface
             $data['aid_' . $iterator] = $orderItem->getSku();
             $data['name_' . $iterator] = $orderItem->getName();
             $data['cnt_' . $iterator] = (int)$orderItem->getQtyOrdered();
-            $data['val_' . $iterator] = $this->currency->formatPrecision(
-                $orderItem->getPriceInclTax(),
-                2,
-                ['display' => Zend_Currency::NO_SYMBOL],
-                false
-            );
+            $data['val_' . $iterator] = $orderItem->getPriceInclTax();
             $iterator++;
         }
         return $data;
