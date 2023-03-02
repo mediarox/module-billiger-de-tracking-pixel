@@ -9,7 +9,6 @@
 namespace Mediarox\BilligerDeTrackingPixel\ViewModel;
 
 use Magento\Checkout\Model\Session;
-use Magento\Directory\Model\Currency;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Url\QueryParamsResolverInterface;
@@ -18,7 +17,6 @@ use Magento\Sales\Model\Order;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Mediarox\BilligerDeTrackingPixel\Model\Source\Config\MethodOptions;
-use Zend_Currency;
 
 /**
  * Class BilligerTracking
