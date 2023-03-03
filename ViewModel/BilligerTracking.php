@@ -10,7 +10,6 @@ namespace Mediarox\BilligerDeTrackingPixel\ViewModel;
 
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Url\QueryParamsResolverInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Sales\Model\Order;
@@ -29,19 +28,16 @@ class BilligerTracking implements ArgumentInterface
     protected StoreManagerInterface $storeManager;
     protected QueryParamsResolverInterface $paramsResolver;
     private Session $checkoutSession;
-    private PriceCurrencyInterface $currency;
     private ScopeConfigInterface $scopeConfig;
     private Order $order;
 
     public function __construct(
         Session $checkoutSession,
-        PriceCurrencyInterface $currency,
         ScopeConfigInterface $scopeConfig,
         StoreManagerInterface $storeManager,
         QueryParamsResolverInterface $paramsResolver
     ) {
         $this->checkoutSession = $checkoutSession;
-        $this->currency = $currency;
         $this->scopeConfig = $scopeConfig;
         $this->storeManager = $storeManager;
         $this->paramsResolver = $paramsResolver;
