@@ -2,7 +2,7 @@
     "name": "mediarox/module-billiger-de-tracking-pixel",
     "description": "This extension for Magento >=2.3 implements a billiger.de tracking pixel on checkout success page.",
     "type": "magento2-module",
-    "version": "2.0.7",
+    "version": "3.0.0",
     "license": [
         "MIT"
     ],
