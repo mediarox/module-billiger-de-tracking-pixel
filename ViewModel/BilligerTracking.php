@@ -2,7 +2,8 @@
 
 /**
  * @package   Mediarox_BilligerDeTrackingPixel
- * @copyright Copyright 2020 (c) mediarox UG (haftungsbeschraenkt) (http://www.mediarox.de)
+ * @copyright Copyright 2020 (c) mediarox UG (haftungsbeschraenkt)
+ *            (http://www.mediarox.de)
  * @author    Marcus Bernt <mbernt@mediarox.de>
  */
 
@@ -15,6 +16,7 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Sales\Model\Order;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Tests\NamingConvention\true\float;
 use Mediarox\BilligerDeTrackingPixel\Model\Source\Config\MethodOptions;
 
 /**
@@ -22,85 +24,33 @@ use Mediarox\BilligerDeTrackingPixel\Model\Source\Config\MethodOptions;
  */
 class BilligerTracking implements ArgumentInterface
 {
-    private const BILLIGER_TRACKING_URL = 'https://billiger.de/sale?';
-    private const SHOP_ID_SYSTEM_CONFIG_PATH = 'mediarox_billiger_tracking/general/shop_id';
-    private const METHOD_SYSTEM_CONFIG_PATH = 'mediarox_billiger_tracking/general/method';
-    protected StoreManagerInterface $storeManager;
-    protected QueryParamsResolverInterface $paramsResolver;
-    private Session $checkoutSession;
-    private ScopeConfigInterface $scopeConfig;
+    private const BILLIGER_TRACKING_URL_SUCCESS = 'https://cmodul.solutenetwork.com/conversion';
+    private const BILLIGER_TRACKING_URL_LANDING = 'https://cmodul.solutenetwork.com/landing';
     private Order $order;
 
     public function __construct(
-        Session $checkoutSession,
-        ScopeConfigInterface $scopeConfig,
-        StoreManagerInterface $storeManager,
-        QueryParamsResolverInterface $paramsResolver
+        private Session $checkoutSession
     ) {
-        $this->checkoutSession = $checkoutSession;
-        $this->scopeConfig = $scopeConfig;
-        $this->storeManager = $storeManager;
-        $this->paramsResolver = $paramsResolver;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBilligerTrackingUrl(): string
-    {
         $this->order = $this->checkoutSession->getLastRealOrder();
-        $trackingUrl = '';
-        if ($this->order->getId()) {
-            $method = $this->scopeConfig->getValue(
-                self::METHOD_SYSTEM_CONFIG_PATH,
-                ScopeInterface::SCOPE_STORE,
-                $this->storeManager->getStore()
-            );
-            $data = [
-                'shop_id' => $this->scopeConfig->getValue(
-                    self::SHOP_ID_SYSTEM_CONFIG_PATH,
-                    ScopeInterface::SCOPE_STORE,
-                    $this->storeManager->getStore()
-                ),
-                'oid'     => $this->order->getIncrementId(),
-            ];
-
-            switch ($method) {
-                case MethodOptions::METHOD_INCLUDE_ORDER_ITEMS:
-                    $data = array_merge($data, $this->getOrderItems());
-                    break;
-                case MethodOptions::METHOD_EXCLUDE_ORDER_ITEMS:
-                    $data = array_merge($data, $this->getOrderTotalValue());
-            }
-            $query = str_replace('%2C', ',', http_build_query($data, '', '&'));
-            $trackingUrl = self::BILLIGER_TRACKING_URL . $query;
-        }
-        return $trackingUrl;
     }
 
-    /**
-     * @return array
-     */
-    private function getOrderItems(): array
+    public function getOrderTotalValue(): float|null
     {
-        $orderItems = $this->order->getAllItems();
-        $data = [];
-        $iterator = 1;
-        foreach ($orderItems as $orderItem) {
-            $data['aid_' . $iterator] = $orderItem->getSku();
-            $data['name_' . $iterator] = $orderItem->getName();
-            $data['cnt_' . $iterator] = (int)$orderItem->getQtyOrdered();
-            $data['val_' . $iterator] = $orderItem->getPriceInclTax();
-            $iterator++;
-        }
-        return $data;
+        return $this->order->getSubtotal();
     }
 
-    /**
-     * @return array
-     */
-    private function getOrderTotalValue(): array
+    public function getOrderId(): string
     {
-        return ['val' => $this->order->getGrandTotal()];
+        return $this->order->getIncrementId();
+    }
+
+    public function getConversionUrl(): string
+    {
+        return self::BILLIGER_TRACKING_URL_SUCCESS;
+    }
+
+    public function getLandingUrl(): string
+    {
+        return self::BILLIGER_TRACKING_URL_SUCCESS;
     }
 }

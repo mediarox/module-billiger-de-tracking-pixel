@@ -1,0 +1,37 @@
+<?php
+/**
+ * @package   Mediarox_BilligerDeTrackingPixel
+ * @copyright Copyright 2020 (c) mediarox UG (haftungsbeschraenkt) (http://www.mediarox.de)
+ * @author    Marcus Bernt <mbernt@mediarox.de>
+ * @var \Magento\Framework\View\Element\Template                     $block
+ * @var \Magento\Framework\Escaper                                   $escaper
+ * @var \Mediarox\BilligerDeTrackingPixel\ViewModel\BilligerTracking $viewModel
+ */
+
+?>
+<?php $viewModel = $block->getData('mediarox_billiger_tracking_view_model'); ?>
+<script>
+    soluteConversionTracking({
+        VALUE: "<?= $viewModel->getOrderTotalValue() ?>",
+        ORDER_ID: "<?= $viewModel->getOrderId() ?>",
+        FACTOR: "1",
+    });
+    function soluteConversionTracking(data) {
+        var ttl = 1000*60*60*24*30;
+        var a = localStorage.getItem("soluteclid");
+        if (!a) return;
+        var b = a.split(" ", 2);
+        if (parseInt(b[0])+ttl > (new Date()).getTime()) {
+            var url = "<?= $viewModel->getConversionUrl() ?>";
+            url += "?val=" + encodeURIComponent(data.VALUE);
+            url += "&oid=" + encodeURIComponent(data.ORDER_ID);
+            url += "&factor=" + encodeURIComponent(data.FACTOR);
+            url += "&url=" + encodeURIComponent(b[1]);
+            var req = new XMLHttpRequest();
+            req.open("GET", url);
+            req.send();
+        } else {
+            localStorage.removeItem("soluteclid");
+        }
+    }
+</script>

@@ -11,7 +11,7 @@
     <body>
         <referenceContainer name="content">
             <block class="Magento\Framework\View\Element\Template" name="mediarox_billiger_tracking"
-                   template="Mediarox_BilligerDeTrackingPixel::success.phtml">
+                   template="Mediarox_BilligerDeTrackingPixel::landing.phtml">
                 <arguments>
                     <argument name="mediarox_billiger_tracking_view_model" xsi:type="object">Mediarox\BilligerDeTrackingPixel\ViewModel\BilligerTracking</argument>
                 </arguments>

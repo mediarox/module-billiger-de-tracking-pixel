@@ -1,0 +1,22 @@
+<?php
+/**
+ * @copyright Copyright 2024 (c) mediarox UG (haftungsbeschraenkt)
+ *            (http://www.mediarox.de)
+ * @author    Marcus Bernt <mbernt@mediarox.de>
+ * @var \Mediarox\BilligerDeTrackingPixel\ViewModel\BilligerTracking $viewModel
+ * @var \Magento\Framework\View\Element\Template $block
+ */
+
+?>
+<?php $viewModel = $block->getData('mediarox_billiger_tracking_view_model'); ?>
+<script>
+    (function soluteLandingTracking() {
+        if (location.href.indexOf("soluteclid") < 0) return;
+        localStorage.setItem("soluteclid", (new Date()).getTime() + " " + location.href);
+        var url = "<?= $viewModel->getLandingUrl() ?>";
+        url += "?url=" + encodeURIComponent(location.href);
+        var req = new XMLHttpRequest();
+        req.open("GET", url);
+        req.send();
+    })();
+</script>
