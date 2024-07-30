@@ -1,10 +1,7 @@
 <?php
-
 /**
- * @package   Mediarox_BilligerDeTrackingPixel
- * @copyright Copyright 2020 (c) mediarox UG (haftungsbeschraenkt)
- *            (http://www.mediarox.de)
- * @author    Marcus Bernt <mbernt@mediarox.de>
+ * Copyright 2024 (c) mediarox UG (haftungsbeschraenkt) (http://www.mediarox.de)
+ * See LICENSE for license details.
  */
 
 namespace Mediarox\BilligerDeTrackingPixel\ViewModel;
@@ -12,11 +9,7 @@ namespace Mediarox\BilligerDeTrackingPixel\ViewModel;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Sales\Model\Order;
-use Magento\Tests\NamingConvention\true\float;
 
-/**
- * Class BilligerTracking
- */
 class BilligerTracking implements ArgumentInterface
 {
     private const BILLIGER_TRACKING_URL_SUCCESS = 'https://cmodul.solutenetwork.com/conversion';
@@ -24,7 +17,7 @@ class BilligerTracking implements ArgumentInterface
     private ?Order $order;
 
     public function __construct(
-        private Session $checkoutSession
+        private readonly Session $checkoutSession
     ) {
         $this->order = $this->checkoutSession->getLastRealOrder();
     }

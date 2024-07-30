@@ -1,12 +1,16 @@
 <?php
 /**
- * @copyright Copyright 2024 (c) mediarox UG (haftungsbeschraenkt)
- *            (http://www.mediarox.de)
- * @author    Marcus Bernt <mbernt@mediarox.de>
- * @var \Mediarox\BilligerDeTrackingPixel\ViewModel\BilligerTracking $viewModel
- * @var \Magento\Framework\View\Element\Template $block
+ * Copyright 2024 (c) mediarox UG (haftungsbeschraenkt) (http://www.mediarox.de)
+ * See LICENSE for license details.
  */
 
+use Mediarox\BilligerDeTrackingPixel\ViewModel\BilligerTracking;
+use Magento\Framework\View\Element\Template;
+
+/**
+ * @var BilligerTracking $viewModel
+ * @var Template $block
+ */
 ?>
 <?php $viewModel = $block->getData('mediarox_billiger_tracking_view_model'); ?>
 <script>

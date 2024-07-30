@@ -1,9 +1,8 @@
 <?xml version="1.0"?>
 <!--
 /**
- * @package Mediarox_BilligerDeTrackingPixel
- * @copyright Copyright 2020 (c) mediarox UG (haftungsbeschraenkt) (http://www.mediarox.de)
- * @author Marcus Bernt <mbernt@mediarox.de>
+ * Copyright 2020 (c) mediarox UG (haftungsbeschraenkt) (http://www.mediarox.de)
+ * See LICENSE for license details.
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

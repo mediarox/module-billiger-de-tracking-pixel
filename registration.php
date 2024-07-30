@@ -1,8 +1,7 @@
 <?php
 /**
- * @package   Mediarox_BilligerDeTrackingPixel
- * @copyright Copyright $copy_year (c) mediarox UG (haftungsbeschraenkt) (http://www.mediarox.de)
- * @author    Marcus Bernt <mbernt@mediarox.de>
+ * Copyright 2022 (c) mediarox UG (haftungsbeschraenkt) (http://www.mediarox.de)
+ * See LICENSE for license details.
  */
 
 use Magento\Framework\Component\ComponentRegistrar;

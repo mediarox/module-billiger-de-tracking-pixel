@@ -2,8 +2,8 @@ This extension for Magento >=2.3.x integrates a tracking pixel on the checkout s
 
 Requirements
 ============
-1. Magento >=2.3.x
-2. PHP >=7.4
+1. Magento >=2.4.x
+2. PHP >=8.1
 
 Installation
 ============
